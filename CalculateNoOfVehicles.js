@@ -16,7 +16,7 @@ const vehicles = [
 ];
 
 const parcels = [
-  { location: 'velachery', weight: 0 },
+  { location: 'velachery', weight: 30 },
   { location: 'madipakkam', weight: 17 },
   { location: 'sholinganallur', weight: 240 }
 ];
@@ -28,35 +28,40 @@ function calculateMinimumVehiclesRequired(vehicles, parcels) {
       console.error("Invalid input");
       return false;
     }
-
+    
     const result = {};
-  
+    
     //iterate through each parcel
     parcels.forEach((parcel) => {
 
-      const parcelLocation = parcel.location;
-      const parcelWeight = parcel.weight;
+      const [parcelLocation ,parcelWeight] = [parcel.location, parcel.weight];
+
+      //check type and empty values
+      if(typeof parcelLocation !=='string' || !parcelLocation || typeof parcelWeight !=='number' || parcelWeight<=0){
+        console.error("Invalid location or parcel weight");
+        return false;
+      }
       
       //sort vehicles in descending order based on it's weight capacity 
       const sortedVehicles = vehicles.sort((a, b) => b.weightCapacity - a.weightCapacity);
   
       let vehicleIndex = 0;
       let remainingWeight = parcelWeight;
-  
+      
       //required vechicles with type and count are stored in "requiredVehicles"
       const requiredVehicles = {};
-  
+      
       while (remainingWeight > 0 && vehicleIndex < sortedVehicles.length) {
         //current vehicle details from sorted array of vehicles
         const currentVehicle = sortedVehicles[vehicleIndex];
         const vehicleType = currentVehicle.type;
         const capacity = currentVehicle.weightCapacity;
-  
+        
         if (remainingWeight >= capacity) {
-
+          
           //to get non-decimal value to store as count of vehicle
           const count = Math.floor(remainingWeight / capacity);
-
+          
           //check whether the vehicle is already in required vehicles object
           requiredVehicles[vehicleType] = (requiredVehicles[vehicleType] || 0) + count;
           
@@ -69,20 +74,32 @@ function calculateMinimumVehiclesRequired(vehicles, parcels) {
       //store ("location : {vehicle : count}") format in result object
       result[parcelLocation] = requiredVehicles;
     });
-  
-    return result;
+
+    return Object.entries(result);
   }
   
-const requiredVehicles = calculateMinimumVehiclesRequired(vehicles,parcels);
+  const requiredVehicles = calculateMinimumVehiclesRequired(vehicles,parcels);
+  console.log(requiredVehicles);
+
+// requiredVehicles.forEach((parcelLocation)=>{
+//   console.log(`To deliver to ${parcelLocation}, we will require ${Object.values(parcelLocation).toString()}`)
+// });
+  
+  
+
 
 //remove empty property from "requiredVehicles"
-for(const location in requiredVehicles){
-  if(Object.values(requiredVehicles[location]).length ===0){
-     delete requiredVehicles[location];
-  }
-}
+// for(const location in requiredVehicles){
+//   if(Object.values(requiredVehicles[location]).length ===0){
+  //      delete requiredVehicles[location];
+  //   }
+  // }
 
-console.log(requiredVehicles);
+
+  // if(!vehicles.every((vehicle)=> typeof vehicle.type ==='string' && vehicle.type !== '')){
+  //   console.error(`Invalid data in vehicles array`)
+  // }
+
 
 
 
