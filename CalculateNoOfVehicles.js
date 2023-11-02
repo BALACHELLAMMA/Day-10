@@ -28,7 +28,13 @@ function calculateMinimumVehiclesRequired(vehicles, parcels) {
       console.error("Invalid input");
       return false;
     }
-    
+
+    //check any invalid data in vehicle array
+    if(!vehicles.every((vehicle)=> typeof vehicle.type ==='string' && vehicle.type !== '' && typeof vehicle.weightCapacity === 'number' && !(vehicle.weightCapacity <=0))){
+      console.error(`Invalid data in vehicles array`);
+      return false;
+    }
+
     const result = {};
     
     //iterate through each parcel
@@ -75,34 +81,32 @@ function calculateMinimumVehiclesRequired(vehicles, parcels) {
       result[parcelLocation] = requiredVehicles;
     });
 
-    return Object.entries(result);
+    return result;
   }
   
-  const requiredVehicles = calculateMinimumVehiclesRequired(vehicles,parcels);
-  console.log(requiredVehicles);
+  const maximumVehiclesRequired = calculateMinimumVehiclesRequired(vehicles,parcels);
+  // console.log(maximumVehiclesRequired);
 
-// requiredVehicles.forEach((parcelLocation)=>{
-//   console.log(`To deliver to ${parcelLocation}, we will require ${Object.values(parcelLocation).toString()}`)
-// });
+  for (const location in maximumVehiclesRequired) {
+    const requiredVehicles = maximumVehiclesRequired[location];
+    console.log(`To deliver to ${location}, we will require ${Object.keys(requiredVehicles).map((type) => `${requiredVehicles[type]} ${type}`).join(' and ')} `);
+  }
   
   
-
-
+  
 //remove empty property from "requiredVehicles"
 // for(const location in requiredVehicles){
 //   if(Object.values(requiredVehicles[location]).length ===0){
-  //      delete requiredVehicles[location];
-  //   }
-  // }
+//      delete requiredVehicles[location];
+//   }
+// }
 
 
-  // if(!vehicles.every((vehicle)=> typeof vehicle.type ==='string' && vehicle.type !== '')){
-  //   console.error(`Invalid data in vehicles array`)
-  // }
-
+  
 
 
 
+0
 
 
 
